@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secret Reveal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1e1e2f, #2a2a3a);
+      color: #eee;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 1rem;
+      text-align: center;
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+    }
+
+    button:hover {
+      background-color: #357ab8;
+    }
+
+    #secret {
+      display: none;
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.06);
+      padding: 1rem;
+      border-radius: 12px;
+      margin-top: 1rem;
+    }
+
+    .secret-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #ffd700;
+    }
+
+    img.secret-image {
+      max-width: 100%;
+      height: auto;
+      margin-top: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      input[type="text"],
+      button {
+        font-size: 0.95rem;
+      }
+
+      .container {
+        padding: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Enter the Key to Uncover Your Secret</h1>
+    <input type="text" id="idInput" placeholder="Enter your ID" />
+    <button onclick="showSecret()">Reveal 🔓</button>
+
+    <div id="secret">
+      <div class="secret-title">🧩 Your Secret Has Been Revealed...</div>
+      <div id="secretContent"></div>
+    </div>
+  </div>
+
+  <script>
+    let secrets = {};
+
+    fetch('secrets.json')
+      .then(response => response.json())
+      .then(data => {
+        secrets = data;
+      })
+      .catch(error => {
+        document.getElementById('secret').style.display = "block";
+        document.getElementById('secretContent').innerHTML =
+          "<p style='color: red;'>Could not load secrets.</p>";
+        console.error("Error loading secrets.json:", error);
+      });
+
+    function showSecret() {
+      const input = document.getElementById("idInput").value.trim();
+      const secretDiv = document.getElementById("secret");
+      const secretContent = document.getElementById("secretContent");
+
+      if (secrets[input]) {
+        secretContent.innerHTML = secrets[input];
+        secretDiv.style.display = "block";
+      } else {
+        secretContent.innerHTML = "<p style='color: red;'>❌ Invalid ID. Nothing here but dust and whispers...</p>";
+        secretDiv.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
